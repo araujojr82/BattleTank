@@ -36,8 +36,59 @@ void ATankPlayerController::AimTowardsCrosshair()
 {
 	if( !GetControlledTank() ) { return; }
 
-	// Get world location if linetrace through the crosshair
-	// If it hits the landscape
-		// Tell controlled tank to aim at this point
+	FVector HitLocation; // Out parameter	
 
+	if( GetSightRayHitLocation( HitLocation ) )
+	{
+		UE_LOG( LogTemp, Warning, TEXT( "Hit Location: %s" ), *HitLocation.ToString() )
+		// TODO Tell controlled tank to aim at this point
+	}
+}
+
+// Get world location of linetrace through the crosshair, true if hits landscape
+bool ATankPlayerController::GetSightRayHitLocation( FVector& OutHitLocation ) const
+{	
+	// Find the crosshair position
+	int32 ViewportSizeX, ViewportSizeY;
+	GetViewportSize( ViewportSizeX, ViewportSizeY );
+
+	FVector2D ScreenLocation = FVector2D( ViewportSizeX * CrossHairXLocation,
+										  ViewportSizeY * CrossHairYLocation );
+
+	// "De-project" the screen position of the crosshair to a world direction
+	FVector LookDirection;
+	if( GetLookDirection( ScreenLocation, LookDirection ) )
+	{
+		// Line-trace along that look direction, and see what we hit ( up to max range )
+		if( GetLookVectorHitLocation( LookDirection, OutHitLocation ) )
+		{
+			return true;
+		}		
+	}	
+	return false;
+}
+
+bool ATankPlayerController::GetLookDirection( FVector2D ScreenLocation, FVector& OutLookDirection ) const
+{
+	FVector CameraWorldLocation;	// To be discarded
+
+	return DeprojectScreenPositionToWorld( ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, OutLookDirection );
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation( FVector LookDirection, FVector& HitLocation ) const
+{
+	FHitResult HitResult;
+	auto StartLocation = PlayerCameraManager->GetCameraLocation();
+	auto EndLocation = StartLocation + ( LookDirection * LineTraceRange );
+	
+	if ( GetWorld()->LineTraceSingleByChannel( HitResult, 
+											   StartLocation, 
+											   EndLocation, 
+											   ECollisionChannel::ECC_Visibility ) )
+	{
+		// Set Hit Location
+		HitLocation = HitResult.Location;
+		return true;
+	}		
+	return false;
 }
