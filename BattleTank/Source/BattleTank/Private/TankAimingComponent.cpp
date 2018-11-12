@@ -7,14 +7,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 
-
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
+	
 	// ...
 }
 
@@ -41,16 +40,13 @@ void UTankAimingComponent::AimAt( FVector HitLocation, float LaunchSpeed )
 	if( bHaveAimSolution )
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
-		MoveBarrelTowards( AimDirection );
-
-		//auto TankName = GetOwner()->GetName();
-		//UE_LOG( LogTemp, Warning, TEXT( "%s is aiming at %s" ), *TankName, *AimDirection.ToString() )
+		MoveBarrelTowards( AimDirection );				
+		//UE_LOG( LogTemp, Warning, TEXT( "Aim solution found" ) )
 	}
-	//else // If no solution found do nothing
-	//{
-	//	auto TankName = GetOwner()->GetName();
-	//	UE_LOG( LogTemp, Warning, TEXT( "%s impossible to aim at that HitLocation" ), *TankName )
-	//}
+	else // If no solution found do nothing
+	{
+		//UE_LOG( LogTemp, Warning, TEXT( "No aim solve found" ) )
+	}
 }
 
 void UTankAimingComponent::MoveBarrelTowards( FVector AimDirection )
