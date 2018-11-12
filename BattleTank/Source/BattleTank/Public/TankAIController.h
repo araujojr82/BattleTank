@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "Public/Tank.h"
-#include "TankPlayerController.h"
-#include "Engine/World.h"
 #include "TankAIController.generated.h"
 
 /**
@@ -22,7 +20,7 @@ private:
 
 	virtual void Tick( float DeltaTime ) override;
 
-	ATank * GetControlledTank() const;
+	ATank* GetControlledTank() const;
 
 	ATank* GetPlayerTank() const;
 };

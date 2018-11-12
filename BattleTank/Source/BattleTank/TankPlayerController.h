@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Public/Tank.h"
-#include "Engine/World.h"
 #include "TankPlayerController.generated.h" // Must be the last include
 
 /**
