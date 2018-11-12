@@ -31,6 +31,19 @@ void ATankAIController::BeginPlay()
 	}
 }
 
+void ATankAIController::Tick( float DeltaTime )
+{
+	if( GetPlayerTank() )
+	{
+		// TODO Move towards the player		
+		GetControlledTank()->AimAt( GetPlayerTank()->GetActorLocation() );	// is GetTargetLocation() better?
+		// Aim towards the player
+		//AimTowardsPlayer();
+
+		// Fire if ready
+	}
+}
+
 ATank* ATankAIController::GetControlledTank() const
 {
 	return Cast<ATank>( GetPawn() );
@@ -38,13 +51,6 @@ ATank* ATankAIController::GetControlledTank() const
 
 ATank * ATankAIController::GetPlayerTank() const
 {
-	// This is my solution and it works as well...
-	//ATank* PlayerTank = nullptr;
-	//ATankPlayerController* PlayerController;
-	//PlayerController = Cast<ATankPlayerController>( GetWorld()->GetFirstPlayerController() );
-	//PlayerTank = Cast<ATank>( PlayerController->GetControlledTank() );
-	//return PlayerTank;
-
 	auto* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	if( !PlayerPawn ) { return nullptr; }
 	
