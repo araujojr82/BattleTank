@@ -48,13 +48,17 @@ void ATank::AimAt( FVector HitLocation )
 
 
 void ATank::Fire()
-{
-	if( !Barrel ) { return; }
+{	
+	bool isReloaded = ( GetWorld()->GetTimeSeconds() - LastFireTime ) > ReloadTimeInSeconds;
 
-	// Spawn a projectile at the socket location on the barrel
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>( ProjectileBluePrint,
-														   Barrel->GetSocketLocation( FName( "Projectile" ) ),
-														   Barrel->GetSocketRotation( FName( "Projectile" ) ) );
+	if( Barrel && isReloaded )
+	{
+		// Spawn a projectile at the socket location on the barrel
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>( ProjectileBluePrint,
+															   Barrel->GetSocketLocation( FName( "Projectile" ) ),
+															   Barrel->GetSocketRotation( FName( "Projectile" ) ) );
 
-	Projectile->LauchProjectile( LaunchSpeed );
+		Projectile->LauchProjectile( LaunchSpeed );
+		LastFireTime = GetWorld()->GetTimeSeconds();
+	}
 }
