@@ -26,6 +26,6 @@ void ATankAIController::Tick( float DeltaTime )
 		ControlledTank->AimAt( PlayerTank->GetActorLocation() );	// is GetTargetLocation() better?		
 
 		// TODO Fire if ready only	
-		 ControlledTank->Fire();
+		//ControlledTank->Fire();
 	}
 }
