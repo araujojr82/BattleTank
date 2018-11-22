@@ -20,7 +20,11 @@ void ATankAIController::Tick( float DeltaTime )
 	auto* PlayerTank = Cast<ATank>( GetWorld()->GetFirstPlayerController()->GetPawn() );
 	if( PlayerTank )
 	{
-		// TODO Move towards the player		
+
+		AActor* PlayerTankActor = Cast<AActor>( PlayerTank );
+
+		// Move towards the player		
+		MoveToActor( PlayerTankActor, AcceptanceRadius ); // TODO check radius is in cm
 
 		// Aim towards the player
 		ControlledTank->AimAt( PlayerTank->GetActorLocation() );	// is GetTargetLocation() better?		
