@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Euclides Araujo 2018
 
 #include "TankMovementComponent.h"
 #include "TankTrack.h"
@@ -12,20 +12,17 @@ void UTankMovementComponent::Initialise( UTankTrack* LeftTrackToSet, UTankTrack*
 void UTankMovementComponent::IntendMoveForward( float Throw )
 {
 	if( !LeftTrack || !RightTrack ) { return; }
-	//auto Time = GetWorld()->GetTimeSeconds();
-	//UE_LOG( LogTemp, Warning, TEXT( "Intend move forward throw: %f" ), Throw )
 
 	LeftTrack->SetThrottle( Throw );
 	RightTrack->SetThrottle( Throw );
-	// TODO prevent double-speed due to dual control use
 }
 
 void UTankMovementComponent::IntendTurnRight( float Throw )
 {
 	if( !LeftTrack || !RightTrack ) { return; }
+
 	LeftTrack->SetThrottle( Throw );
 	RightTrack->SetThrottle( -Throw );
-	// TODO prevent double-speed due to dual control use
 }
 
 void UTankMovementComponent::RequestDirectMove( const FVector & MoveVelocity, bool bForceMaxSpeed )
@@ -40,5 +37,4 @@ void UTankMovementComponent::RequestDirectMove( const FVector & MoveVelocity, bo
 	auto RightThrow = FVector::CrossProduct( TankForward, AIForwardIntention ).Z;
 	IntendTurnRight( RightThrow );
 	
-	//UE_LOG( LogTemp, Warning, TEXT( "%s move velocity is %s" ), *TankName, *MoveVelocityString )
 }
