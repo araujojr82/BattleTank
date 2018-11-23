@@ -5,6 +5,15 @@
 #include "CoreMinimal.h"
 #include "TankAimingComponent.generated.h"
 
+// Enum for aiming state
+UENUM()
+enum class EFiringState : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
+
 class UTankBarrel;
 class UTankTurret;
 
@@ -21,6 +30,10 @@ public:
 	void SetTurretReference( UTankTurret* TurretToSet );
 
 	void AimAt( FVector WorldSpaceAim, float LaunchSpeed );
+
+protected:
+	UPROPERTY( BlueprintReadOnly, Category = "State" )
+	EFiringState FiringState = EFiringState::Locked;
 
 private:
 	UTankBarrel* Barrel = nullptr;
