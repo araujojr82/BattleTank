@@ -35,6 +35,7 @@ private:
 	UPROPERTY( EditDefaultsOnly, Category = "Setup" )
 	TSubclassOf<AProjectile> ProjectileBluePrint;
 
+	// TODO remove after moving to Aiming Component
 	UPROPERTY( EditDefaultsOnly, Category = "Firing" )
 	float LaunchSpeed = 4000;
 
