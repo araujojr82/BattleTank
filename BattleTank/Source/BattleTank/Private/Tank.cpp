@@ -27,15 +27,16 @@ void ATank::BeginPlay()
 
 void ATank::AimAt( FVector HitLocation )
 {
-	if( !TankAimingComponent ) { return; }
+	if( !ensure( TankAimingComponent ) ) { return; }
 	TankAimingComponent->AimAt( HitLocation, LaunchSpeed );
 }
 
 void ATank::Fire()
 {	
+	if( !ensure( Barrel ) ) { return; }
 	bool isReloaded = ( GetWorld()->GetTimeSeconds() - LastFireTime ) > ReloadTimeInSeconds;
 
-	if( Barrel /*&& isReloaded*/ )
+	if( isReloaded )
 	{
 		auto Time = GetWorld()->GetTimeSeconds();
 		UE_LOG( LogTemp, Warning, TEXT( "%f: Fire!!" ), Time )
@@ -45,6 +46,6 @@ void ATank::Fire()
 															   Barrel->GetSocketLocation( FName( "Projectile" ) ),
 															   Barrel->GetSocketRotation( FName( "Projectile" ) ) );
 		Projectile->LauchProjectile( LaunchSpeed );
-		//LastFireTime = GetWorld()->GetTimeSeconds();
+		LastFireTime = GetWorld()->GetTimeSeconds();
 	}
 }
