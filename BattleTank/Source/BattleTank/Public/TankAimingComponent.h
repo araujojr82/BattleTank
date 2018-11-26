@@ -26,7 +26,7 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "Setup" )
 	void Initialise( UTankBarrel* BarrelToSet, UTankTurret* TurretToSet );
 
-	void AimAt( FVector WorldSpaceAim, float LaunchSpeed );
+	void AimAt( FVector WorldSpaceAim );
 
 protected:
 	UPROPERTY( BlueprintReadOnly, Category = "State" )
@@ -40,4 +40,8 @@ private:
 	UTankTurret* Turret = nullptr;
 
 	void MoveBarrelTowards( FVector AimDirection );	
+
+	// TODO remove after moving to Aiming Component
+	UPROPERTY( EditDefaultsOnly, Category = "Firing" )
+	float LaunchSpeed = 4000;
 };

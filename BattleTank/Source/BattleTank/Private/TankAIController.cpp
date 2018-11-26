@@ -1,9 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Euclides Araujo 2018
 
 #include "TankAIController.h"
-#include "TankPlayerController.h"
+#include "TankAimingComponent.h"
 #include "Engine/World.h"
-#include "Tank.h"
 // Depends on movement component via pathfinding system
 
 void ATankAIController::BeginPlay()
@@ -15,22 +14,18 @@ void ATankAIController::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
-	auto* ControlledTank = Cast<ATank>( GetPawn() );
-	if( !ensure( ControlledTank ) ) { return; }
+	auto* PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	auto* ControlledTank = GetPawn();
+	if( !ensure( PlayerTank && ControlledTank ) ) { return; }
 
-	auto* PlayerTank = Cast<ATank>( GetWorld()->GetFirstPlayerController()->GetPawn() );
-	if( PlayerTank )
-	{
+	// Move towards the player		
+	MoveToActor( PlayerTank, AcceptanceRadius ); // TODO check radius is in cm
 
-		AActor* PlayerTankActor = Cast<AActor>( PlayerTank );
+	// Aim towards the player
+	auto AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
+	if( !ensure( AimingComponent ) ) { return; }
+	AimingComponent->AimAt( PlayerTank->GetActorLocation() );	// is GetTargetLocation() better?
 
-		// Move towards the player		
-		MoveToActor( PlayerTankActor, AcceptanceRadius ); // TODO check radius is in cm
-
-		// Aim towards the player
-		ControlledTank->AimAt( PlayerTank->GetActorLocation() );	// is GetTargetLocation() better?		
-
-		// TODO Fire if ready only	
-		//ControlledTank->Fire();
-	}
+	// TODO Fire if ready only	
+	//ControlledTank->Fire();
 }
