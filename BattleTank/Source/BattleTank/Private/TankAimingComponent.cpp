@@ -1,12 +1,14 @@
 // Copyright Euclides Araujo 2018
 
 #include "TankAimingComponent.h"
+#include "Engine/World.h"
 #include "GameFramework/Actor.h"
 #include "Components/ActorComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -44,13 +46,6 @@ void UTankAimingComponent::AimAt( FVector HitLocation )
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards( AimDirection );
-		//auto Time = GetWorld()->GetTimeSeconds();
-		//UE_LOG( LogTemp, Warning, TEXT( "%f: Aim solution found" ), Time )
-	}
-	else // If no solution found do nothing
-	{
-		//auto Time = GetWorld()->GetTimeSeconds();
-		//UE_LOG( LogTemp, Warning, TEXT( "%f: No aim solve found" ), Time )
 	}
 }
 
@@ -65,4 +60,23 @@ void UTankAimingComponent::MoveBarrelTowards( FVector AimDirection )
 	
 	Barrel->Elevate( DeltaRotator.Pitch );
 	Turret->Rotate( DeltaRotator.Yaw );
+}
+
+void UTankAimingComponent::Fire()
+{
+	if( !ensure( Barrel ) ) { return; }
+	bool isReloaded = ( GetWorld()->GetTimeSeconds() - LastFireTime ) > ReloadTimeInSeconds;
+
+	if( isReloaded )
+	{
+		auto Time = GetWorld()->GetTimeSeconds();
+		UE_LOG( LogTemp, Warning, TEXT( "%f: Fire!!" ), Time )			
+
+			// Spawn a projectile at the socket location on the barrel
+			auto Projectile = GetWorld()->SpawnActor<AProjectile>( ProjectileBluePrint,
+																   Barrel->GetSocketLocation( FName( "Projectile" ) ),
+																   Barrel->GetSocketRotation( FName( "Projectile" ) ) );
+		Projectile->LauchProjectile( LaunchSpeed );
+		LastFireTime = GetWorld()->GetTimeSeconds();
+	}
 }
