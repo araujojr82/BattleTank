@@ -15,29 +15,44 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
+	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UTankAimingComponent::BeginPlay()
 {
 	// So the first fire is after initial reload
-	LastFireTime = FPlatformTime::Seconds();
+	LastFireTime = GetWorld()->GetTimeSeconds();
+}
+
+void UTankAimingComponent::Initialise( UTankBarrel * BarrelToSet, UTankTurret * TurretToSet )
+{
+	Barrel = BarrelToSet;
+	Turret = TurretToSet;
 }
 
 void UTankAimingComponent::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction )
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Aiming Comp. ticking"))
-	if( ( GetWorld()->GetTimeSeconds() - LastFireTime ) > ReloadTimeInSeconds )
+	if( ( GetWorld()->GetTimeSeconds() - LastFireTime ) < ReloadTimeInSeconds )
 	{
 		FiringState = EFiringState::Reloading;
 	}
-	// TODO Handle aiming and locked states
+	else if( IsBarrelMoving() )
+	{
+		FiringState = EFiringState::Aiming;
+	}
+	else
+	{
+		FiringState = EFiringState::Locked;
+	}
 }
 
-void UTankAimingComponent::Initialise( UTankBarrel * BarrelToSet, UTankTurret * TurretToSet )
+bool UTankAimingComponent::IsBarrelMoving()
 {
-	Barrel =  BarrelToSet;
-	Turret = TurretToSet;
+	if( !ensure( Barrel ) ) { return false; }
+	auto BarrelForward = Barrel->GetForwardVector();
+	return !BarrelForward.Equals( AimDirection, 0.01 );	// vectors are equal
 }
 
 void UTankAimingComponent::AimAt( FVector HitLocation )
@@ -58,7 +73,7 @@ void UTankAimingComponent::AimAt( FVector HitLocation )
 																		 ESuggestProjVelocityTraceOption::DoNotTrace );
 	if( bHaveAimSolution )
 	{
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards( AimDirection );
 	}
 }
@@ -84,7 +99,7 @@ void UTankAimingComponent::Fire()
 		if( !ensure( Barrel ) ) { return; }
 		if( !ensure( ProjectileBluePrint ) ) { return; }
 		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG( LogTemp, Warning, TEXT( "%f: Fire!!" ), Time )			
+		//UE_LOG( LogTemp, Warning, TEXT( "%f: Fire!!" ), Time )
 
 			
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>( ProjectileBluePrint,
