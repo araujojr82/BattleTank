@@ -26,6 +26,8 @@ void ATankAIController::Tick( float DeltaTime )
 	if( !ensure( AimingComponent ) ) { return; }
 	AimingComponent->AimAt( PlayerTank->GetActorLocation() );	// is GetTargetLocation() better?
 
-	// TODO Fire if ready only	
-	AimingComponent->Fire();	
+	if( AimingComponent->GetFiringState() == EFiringState::Locked )
+	{
+		AimingComponent->Fire();
+	}
 }
