@@ -11,9 +11,6 @@ ASprungWheel::ASprungWheel()
 	PhysicsConstraint = CreateDefaultSubobject< UPhysicsConstraintComponent>( FName( "Physics Constraint" ) );
 	SetRootComponent( PhysicsConstraint );
 
-	Mass = CreateDefaultSubobject< UStaticMeshComponent>( FName( "Mass" ) );
-	Cast< USceneComponent>( Mass )->SetupAttachment( PhysicsConstraint );
-
 	Wheel = CreateDefaultSubobject< UStaticMeshComponent>( FName( "Wheel" ) );
 	Cast<USceneComponent>( Wheel )->SetupAttachment( PhysicsConstraint );
 }
@@ -23,14 +20,18 @@ void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if( GetAttachParentActor() )
-	{
-		UE_LOG( LogTemp, Warning, TEXT( "Not Null: %s" ), *GetAttachParentActor()->GetName() )
-	}
-	else
-	{
-		UE_LOG( LogTemp, Warning, TEXT( "Null" ))
-	}
+	SetupConstraint();
+}
+
+void ASprungWheel::SetupConstraint()
+{
+	if( !GetAttachParentActor() ) { return; }
+
+	UPrimitiveComponent* BodyRoot = Cast<UPrimitiveComponent>( GetAttachParentActor()->GetRootComponent() );
+
+	if( !BodyRoot ) { return; }
+
+	PhysicsConstraint->SetConstrainedComponents( BodyRoot, NAME_None, Cast<UPrimitiveComponent>( Wheel ), NAME_None );
 }
 
 // Called every frame
@@ -39,4 +40,3 @@ void ASprungWheel::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
