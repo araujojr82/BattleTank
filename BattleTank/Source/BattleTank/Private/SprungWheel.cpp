@@ -8,11 +8,17 @@ ASprungWheel::ASprungWheel()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	PhysicsConstraint = CreateDefaultSubobject< UPhysicsConstraintComponent>( FName( "Physics Constraint" ) );
-	SetRootComponent( PhysicsConstraint );
+	MassAxleConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>( FName( "Mass-Axle Constraint" ) );
+	SetRootComponent( MassAxleConstraint );
 
-	Wheel = CreateDefaultSubobject< UStaticMeshComponent>( FName( "Wheel" ) );
-	Cast<USceneComponent>( Wheel )->SetupAttachment( PhysicsConstraint );
+	Axle = CreateDefaultSubobject<USphereComponent>( FName( "Axle" ) );
+	Axle->SetupAttachment( MassAxleConstraint );
+
+	Wheel = CreateDefaultSubobject<USphereComponent>( FName( "Wheel" ) );
+	Wheel->SetupAttachment( Axle );
+
+	AxleWheelConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>( FName( "Axle-Wheel Constraint" ) );
+	AxleWheelConstraint->SetupAttachment( Axle );	
 }
 
 // Called when the game starts or when spawned
@@ -31,7 +37,8 @@ void ASprungWheel::SetupConstraint()
 
 	if( !BodyRoot ) { return; }
 
-	PhysicsConstraint->SetConstrainedComponents( BodyRoot, NAME_None, Cast<UPrimitiveComponent>( Wheel ), NAME_None );
+	MassAxleConstraint->SetConstrainedComponents( BodyRoot, NAME_None, Cast<UPrimitiveComponent>( Axle ), NAME_None );
+	AxleWheelConstraint->SetConstrainedComponents( Cast<UPrimitiveComponent>( Axle ), NAME_None, Cast<UPrimitiveComponent>( Wheel ), NAME_None );
 }
 
 // Called every frame
