@@ -36,8 +36,8 @@ void ATankPlayerController::SetPawn( APawn* InPawn )
 
 void ATankPlayerController::OnTankDeath()
 {
-	UE_LOG( LogTemp, Warning, TEXT( "PlayerController: Received OnDeath broadcast!" ) );
-	//StartSpectatingOnly();
+	//UE_LOG( LogTemp, Warning, TEXT( "PlayerController: Received OnDeath broadcast!" ) );
+	StartSpectatingOnly();
 }
 
 void ATankPlayerController::AimTowardsCrosshair()

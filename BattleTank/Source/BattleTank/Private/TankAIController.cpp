@@ -26,8 +26,10 @@ void ATankAIController::SetPawn( APawn* InPawn )
 
 void ATankAIController::OnTankDeath()
 {
-	UE_LOG( LogTemp, Warning, TEXT( "AIController: Received OnDeath broadcast!" ) );
-	//DeattachFromControllerPendingDestroy()
+	if( !GetPawn() ) { return; }
+
+	//UE_LOG( LogTemp, Warning, TEXT( "AIController: Received OnDeath broadcast!" ) );
+	GetPawn()->DetachFromControllerPendingDestroy();
 }
 
 
@@ -37,7 +39,9 @@ void ATankAIController::Tick( float DeltaTime )
 
 	auto* PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
 	auto* ControlledTank = GetPawn();
-	if( !ensure( PlayerTank && ControlledTank ) ) { return; }
+	if( !ensure( ControlledTank ) ) { return; }
+
+	if( !PlayerTank ) { return; }
 
 	// Move towards the player		
 	MoveToActor( PlayerTank, AcceptanceRadius ); // TODO check radius is in cm
