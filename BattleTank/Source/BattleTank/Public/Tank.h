@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "SprungWheel.h"
 #include "Tank.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE( FTankDelegate );
@@ -37,4 +38,7 @@ private:
 	
 	UPROPERTY( VisibleAnywhere, Category = "Health" )
 	int32 CurrentHealth; // Initialised in BeginPlay
+
+	//UPROPERTY( VisibleAnywhere, Category = "Components" )
+	//ASprungWheel* MySprungWheel = nullptr;
 };

@@ -18,6 +18,10 @@ ATank::ATank()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
+	//MySprungWheel = CreateDefaultSubobject< ASprungWheel>( FName( "Sprung Wheel" ) );
+	//Cast< USceneComponent>( MySprungWheel )->SetupAttachment( Cast< USceneComponent>( this->GetParentActor() ) );//Cast< USceneComponent>( Mass ) );
+
 }
 float ATank::TakeDamage( float DamageAmount, FDamageEvent const &DamageEvent, AController* EventInstigator, AActor* DamageCauser )
 {

@@ -8,23 +8,29 @@ ASprungWheel::ASprungWheel()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	Mass = CreateDefaultSubobject< UStaticMeshComponent>( FName( "Mass" ) );
-	SetRootComponent( Cast<USceneComponent>( Mass ) );	
+	PhysicsConstraint = CreateDefaultSubobject< UPhysicsConstraintComponent>( FName( "Physics Constraint" ) );
+	SetRootComponent( PhysicsConstraint );
 
-	PhysicsConstraint = CreateDefaultSubobject< UPhysicsConstraintComponent>( FName( "Physics Constraint" ) );	
-	PhysicsConstraint->SetupAttachment( Cast< USceneComponent>( Mass ) );
-	//PhysicsConstraint->AttachToComponent( Cast< USceneComponent>( Mass ), FAttachmentTransformRules::KeepRelativeTransform );
+	Mass = CreateDefaultSubobject< UStaticMeshComponent>( FName( "Mass" ) );
+	Cast< USceneComponent>( Mass )->SetupAttachment( PhysicsConstraint );
 
 	Wheel = CreateDefaultSubobject< UStaticMeshComponent>( FName( "Wheel" ) );
-	Cast<USceneComponent>( Wheel )->SetupAttachment( Cast< USceneComponent>( Mass ) );
-	//Cast<USceneComponent>( Wheel )->AttachToComponent( Cast< USceneComponent>( Mass ), FAttachmentTransformRules::KeepRelativeTransform );
+	Cast<USceneComponent>( Wheel )->SetupAttachment( PhysicsConstraint );
 }
 
 // Called when the game starts or when spawned
 void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if( GetAttachParentActor() )
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Null"))
+	}
+	else
+	{
+		UE_LOG( LogTemp, Warning, TEXT( "Null" ))
+	}
 }
 
 // Called every frame
