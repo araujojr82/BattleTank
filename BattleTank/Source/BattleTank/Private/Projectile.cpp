@@ -3,6 +3,7 @@
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
 // Sets default values
@@ -51,6 +52,14 @@ void AProjectile::OnHit( UPrimitiveComponent * HitComponent, AActor * OtherActor
 
 	SetRootComponent( ImpactBlast );
 	CollisionMesh->DestroyComponent();
+
+	UGameplayStatics::ApplyRadialDamage( this, 
+										 ProjectileDamage,
+										 GetActorLocation(),
+										 ExplosionForce->Radius, // for consistency
+										 UDamageType::StaticClass(),
+										 TArray<AActor*>() // damage all actors
+										 );
 
 	FTimerHandle Timer;
 
