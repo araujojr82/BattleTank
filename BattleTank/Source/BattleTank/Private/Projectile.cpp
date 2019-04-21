@@ -17,6 +17,9 @@ AProjectile::AProjectile()
 	CollisionMesh->SetNotifyRigidBodyCollision( true );
 	CollisionMesh->SetVisibility( false );
 
+	DrawMesh = CreateDefaultSubobject<UStaticMeshComponent>( FName( "Draw Mesh" ) );
+	DrawMesh->AttachToComponent( Cast< USceneComponent>( CollisionMesh ), FAttachmentTransformRules::KeepRelativeTransform );
+
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>( FName( "Launch Blast" ) );
 	LaunchBlast->AttachToComponent( Cast< USceneComponent>( CollisionMesh ), FAttachmentTransformRules::KeepRelativeTransform );
 
@@ -52,6 +55,7 @@ void AProjectile::OnHit( UPrimitiveComponent * HitComponent, AActor * OtherActor
 
 	SetRootComponent( ImpactBlast );
 	CollisionMesh->DestroyComponent();
+	DrawMesh->DestroyComponent();
 
 	UGameplayStatics::ApplyRadialDamage( this, 
 										 ProjectileDamage,
